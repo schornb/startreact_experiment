@@ -15,7 +15,7 @@ import sys  # to get file system encoding
 import psychopy.iohub as io
 from psychopy.hardware import keyboard
 
-from utils import draw_visual, get_audio, wait_for_click, check_for_escape
+from utils import draw_visual, get_audio, wait_for_click
 
 
 # Ensure that relative paths start from the same directory as this script
@@ -27,8 +27,8 @@ psychopyVersion = '2022.1.4'
 expName = 'StartReact Experiment' 
 expInfo = {
     'ID': '',
-    'Trials': 5,
-    'Blocks': 15, 
+    'Blocks': 5, 
+    'Trials per Block': 15,
     'Other Notes': ''
 }
 
@@ -54,7 +54,7 @@ endExpNow = False  # flag for 'escape' or other condition => quit the exp
 #### Setup ####
 
 # Window
-win = win = visual.Window([800,600], fullscr=False, monitor="testMonitor", units="cm")
+win = win = visual.Window([800,600], fullscr=True, monitor="testMonitor", units="cm")
 
 # Instruction
 
@@ -106,22 +106,22 @@ wait_for_click(win, instruction)
 
 print("Starting experiment...")
 
-assert NUM_BLOCKS % NUM_SOUNDS == 0, "Number of blocks must be a multiple of number of sounds"
+assert NUM_TRIALS % NUM_SOUNDS == 0, "Number of blocks must be a multiple of number of sounds"
 
-for trial in range(NUM_TRIALS):
+for block in range(NUM_BLOCKS):
 
     # Set sound
-    sounds = np.tile(np.arange(NUM_SOUNDS), int(NUM_BLOCKS/NUM_SOUNDS))
+    sounds = np.tile(np.arange(NUM_SOUNDS), int(NUM_TRIALS/NUM_SOUNDS))
     np.random.shuffle(sounds)
 
-    # Click to start trial
-    trial_text = visual.TextStim(win, 
-        text="Trial %d\nClick to Start" %(trial+1)
+    # Click to start block
+    block_text = visual.TextStim(win, 
+        text="Block %d\nClick to Start" %(block+1)
     )
 
-    wait_for_click(win, trial_text)
+    wait_for_click(win, block_text)
 
-    for block in range(NUM_BLOCKS):
+    for trial in range(NUM_TRIALS):
 
         
         # Fixation

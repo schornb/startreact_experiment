@@ -1,17 +1,6 @@
 
 from psychopy import visual, core, sound, event
 
-def check_for_escape(win):
-    keys = event.getKeys()
-    if keys[0] == 'escape':
-        shutdown(win)
-    else:
-        return 
-
-def shutdown(win):
-    win.close()
-    core.quit()
-
 def wait_for_click(win, visual):
     """
     Waits for a keypress to be pressed
@@ -24,7 +13,7 @@ def wait_for_click(win, visual):
     while click == None:
         visual.draw()
         win.flip()
-        click = event.waitKeys(1.0)
+        click = event.waitKeys()
     return click
 
 
