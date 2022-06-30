@@ -15,7 +15,7 @@ import sys  # to get file system encoding
 import psychopy.iohub as io
 from psychopy.hardware import keyboard
 
-from utils import draw_visual, get_audio
+from utils import draw_visual, get_audio, wait_for_click, check_for_escape
 
 
 # Ensure that relative paths start from the same directory as this script
@@ -27,10 +27,8 @@ psychopyVersion = '2022.1.4'
 expName = 'StartReact Experiment' 
 expInfo = {
     'ID': '',
-    'Session': '',
-    'Blocks': 15, 
     'Trials': 5,
-    'Condition': '',
+    'Blocks': 15, 
     'Other Notes': ''
 }
 
@@ -42,7 +40,7 @@ expInfo['expName'] = expName
 expInfo['psychopyVersion'] = psychopyVersion
 
 # Data file name stem = absolute path + name; later add .psyexp, .csv, .log, etc
-fileName = _thisDir + os.sep + u'data/%s.txt' %(expInfo['Session']) 
+fileName = _thisDir + os.sep + u'data/%s.txt' %(expInfo['ID']) 
 dataFile = open(fileName, 'w') 
 dataFile.write("ID, Experiment Name, Date, Number of Blocks. Number of Trials \n")
 dataFile.write("%s, %s, %s, %s, %s" %(expInfo['ID'], expName, expInfo['Date'], expInfo['Blocks'], expInfo['Trials']))
@@ -50,6 +48,8 @@ dataFile.write("%s, %s, %s, %s, %s" %(expInfo['ID'], expName, expInfo['Date'], e
  
 logFile = logging.LogFile(fileName+'.log', level=logging.EXP)
 logging.console.setLevel(logging.WARNING)  
+
+endExpNow = False  # flag for 'escape' or other condition => quit the exp
 
 #### Setup ####
 
@@ -80,20 +80,15 @@ stimulus = visual.Circle(win,
     )
 
 ####
-# Quiet Audio Constants
+# Sound Parameters 
+NUM_SOUNDS = 3
 QUIET_DB = 80 # db
 QUIET_HZ = 500 # Hz
 QUIET_TIME = 2/100 # sec
-####
-quiet_audio = get_audio(amp=QUIET_DB, freq=QUIET_HZ, time=QUIET_TIME)
-
-####
-# Startling Audio Constants
 LOUD_DB = 115 # db
 LOUD_HZ = 500 # Hz
 LOUD_TIME = 2/100 # sec
 ####
-startling_audio = get_audio(amp=LOUD_DB, freq=LOUD_HZ, time=LOUD_TIME)
 
 ####
 # Experiment parameters
@@ -105,44 +100,54 @@ NUM_TRIALS = expInfo['Trials']
 
 # Instructions 
 
-click = None
-while click == None:
-    instruction.draw()
-    win.flip()
-    c = event.waitKeys(1.0)
-
+wait_for_click(win, instruction)
 
 # Start experiment
 
-print("Starting session %d", expInfo['Session'])
+print("Starting experiment...")
 
-block = 1
-for i in range(NUM_BLOCKS):
-    trial = 1
-    for j in range(NUM_TRIALS):
+assert NUM_BLOCKS % NUM_SOUNDS == 0, "Number of blocks must be a multiple of number of sounds"
+
+for trial in range(NUM_TRIALS):
+
+    # Set sound
+    sounds = np.tile(np.arange(NUM_SOUNDS), int(NUM_BLOCKS/NUM_SOUNDS))
+    np.random.shuffle(sounds)
+
+    # Click to start trial
+    trial_text = visual.TextStim(win, 
+        text="Trial %d\nClick to Start" %(trial+1)
+    )
+
+    wait_for_click(win, trial_text)
+
+    for block in range(NUM_BLOCKS):
+
+        
         # Fixation
         time_up = randint(5, 10) # Picks pause time between 5 and 10 seconds
         draw_visual(win, fixation, time_up)
 
         # Stimulus
-        sound_picker = randint(0, 2) # Random pick between 0 and 2
+        sound_picker = sounds[block]
         sound_used = { 
             0: None, # no audio
-            1: quiet_audio, 
-            2: startling_audio 
+            1: get_audio(amp=QUIET_DB, freq=QUIET_HZ, time=QUIET_TIME), # quiet audio
+            2: get_audio(amp=LOUD_DB, freq=LOUD_HZ, time=LOUD_TIME) # startling_audio 
         }[sound_picker]
 
         stimulus.draw()
 
         if sound_used != None:
-            sound_used.play()
+            nextFlip = win.getFutureFlipTime(clock='ptb')
+            sound_used.play(when=nextFlip)
 
         win.flip()
         core.wait(2/100) # Wait for 2 ms
 
-        print("Block %d, Trial %d" %(block, trial))
-        block += 1
-        trial += 1
+        print("Block %d, Trial %d, Loadness: %d, Pause: %d" %(block+1, trial+1, sound_picker, time_up))
+
+
 
 
 logging.flush()

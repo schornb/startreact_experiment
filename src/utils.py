@@ -1,5 +1,32 @@
 
-from psychopy import visual, core, sound
+from psychopy import visual, core, sound, event
+
+def check_for_escape(win):
+    keys = event.getKeys()
+    if keys[0] == 'escape':
+        shutdown(win)
+    else:
+        return 
+
+def shutdown(win):
+    win.close()
+    core.quit()
+
+def wait_for_click(win, visual):
+    """
+    Waits for a keypress to be pressed
+
+    :param win: window projected on monitor
+    :param visual: visual to be displayed
+    :returns: key pressed
+    """
+    click = None
+    while click == None:
+        visual.draw()
+        win.flip()
+        click = event.waitKeys(1.0)
+    return click
+
 
 def draw_visual(window, visual, time):
     """
