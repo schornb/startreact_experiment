@@ -54,7 +54,7 @@ endExpNow = False  # flag for 'escape' or other condition => quit the exp
 #### Setup ####
 
 # Window
-win = win = visual.Window([800,600], fullscr=True, monitor="testMonitor", units="cm")
+win = win = visual.Window([800,600], fullscr=False, monitor="testMonitor", units="cm")
 
 # Instruction
 
@@ -93,7 +93,7 @@ LOUD_TIME = 2/100 # sec
 ####
 # Experiment parameters
 NUM_BLOCKS = expInfo['Blocks']
-NUM_TRIALS = expInfo['Trials']
+NUM_TRIALS = expInfo['Trials per Block']
 ####
 
 #### Experiment #####
@@ -129,7 +129,7 @@ for block in range(NUM_BLOCKS):
         draw_visual(win, fixation, time_up)
 
         # Stimulus
-        sound_picker = sounds[block]
+        sound_picker = sounds[trial]
         sound_used = { 
             0: None, # no audio
             1: get_audio(amp=QUIET_DB, freq=QUIET_HZ, time=QUIET_TIME), # quiet audio
