@@ -32,6 +32,13 @@ expInfo = {
     'Other Notes': ''
 }
 
+####
+# Experiment parameters
+ID = expInfo['ID']
+NUM_BLOCKS = expInfo['Blocks']
+NUM_TRIALS = expInfo['Trials per Block']
+####
+
 dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expName)
 if dlg.OK == False:
     core.quit()  # user pressed cancel
@@ -43,7 +50,7 @@ expInfo['psychopyVersion'] = psychopyVersion
 fileName = _thisDir + os.sep + u'data/%s.txt' %(expInfo['ID']) 
 dataFile = open(fileName, 'w') 
 dataFile.write("ID, Experiment Name, Date, Number of Blocks. Number of Trials \n")
-dataFile.write("%s, %s, %s, %s, %s" %(expInfo['ID'], expName, expInfo['Date'], expInfo['Blocks'], expInfo['Trials']))
+dataFile.write("%s, %s, %s, %s, %s" %(expInfo['ID'], expName, expInfo['Date'], NUM_BLOCKS, NUM_TRIALS))
 
  
 logFile = logging.LogFile(fileName+'.log', level=logging.EXP)
@@ -88,12 +95,6 @@ QUIET_TIME = 2/100 # sec
 LOUD_DB = 115 # db
 LOUD_HZ = 500 # Hz
 LOUD_TIME = 2/100 # sec
-####
-
-####
-# Experiment parameters
-NUM_BLOCKS = expInfo['Blocks']
-NUM_TRIALS = expInfo['Trials per Block']
 ####
 
 #### Experiment #####
