@@ -87,6 +87,11 @@ stimulus = visual.Circle(win,
     )
 
 ####
+# Stimulus Parameters
+STIMULUS_DURATION = 1/10 # seconds
+####
+
+####
 # Sound Parameters 
 NUM_SOUNDS = 3
 QUIET_DB = 80 # db
@@ -144,7 +149,7 @@ for block in range(NUM_BLOCKS):
             sound_used.play(when=nextFlip)
 
         win.flip()
-        core.wait(2/100) # Wait for 2 ms
+        core.wait(STIMULUS_DURATION) # Wait for 2 ms
 
         print("Block %d, Trial %d, Loadness: %d, Pause: %d" %(block+1, trial+1, sound_picker, time_up))
 
