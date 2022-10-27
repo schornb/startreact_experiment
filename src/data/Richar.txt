@@ -1,0 +1,2 @@
+ID, Experiment Name, Date, Number of Blocks. Number of Trials 
+Richar, StartReact Experiment, 2022-10-27_14h55.59.034, 5, 15

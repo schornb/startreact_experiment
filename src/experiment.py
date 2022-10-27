@@ -121,15 +121,15 @@ for block in range(NUM_BLOCKS):
     # add stimulus of 3 X 100 Hz tones lasting for 100 ms with 200 ms between them
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
     now = core.getTime()
-    stimulus.play(when=now)
+    sync.play(when=now)
 
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
     snow = core.getTime()
-    stimulus.play(when=now+200e-3)
+    sync.play(when=now+200e-3)
 
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
     now = core.getTime()
-    stimulus.play(when=now+200e-3)
+    sync.play(when=now+200e-3)
 
     # Set sound
     sounds = np.tile(np.arange(NUM_SOUNDS), int(NUM_TRIALS/NUM_SOUNDS))
