@@ -51,7 +51,6 @@ fileName = _thisDir + os.sep + u'data/%s.txt' %(expInfo['ID'])
 dataFile = open(fileName, 'w') 
 dataFile.write("ID, Experiment Name, Date, Number of Blocks. Number of Trials \n")
 dataFile.write("%s, %s, %s, %s, %s" %(expInfo['ID'], expName, expInfo['Date'], NUM_BLOCKS, NUM_TRIALS))
-
  
 logFile = logging.LogFile(fileName+'.log', level=logging.EXP)
 logging.console.setLevel(logging.WARNING)  
@@ -74,7 +73,7 @@ instruction = visual.TextStim(win,
 # Fixation cross
 fixation = visual.ShapeStim(win, 
     vertices=((0, -0.5), (0, 0.5), (0,0), (-0.5,0), (0.5, 0)),
-    lineWidth=5,
+    lineWidth=5,f
     closeShape=False,
     lineColor="white"
 )
@@ -100,6 +99,9 @@ QUIET_TIME = 2/100 # sec
 LOUD_DB = 115 # db
 LOUD_HZ = 500 # Hz
 LOUD_TIME = 2/100 # sec
+SYNC_DB = 115 # db
+SYNC_HZ = 100 # Hz
+SYNC_TIME = 100e-3 # sec
 ####
 
 #### Experiment #####
@@ -115,6 +117,19 @@ print("Starting experiment...")
 assert NUM_TRIALS % NUM_SOUNDS == 0, "Number of blocks must be a multiple of number of sounds"
 
 for block in range(NUM_BLOCKS):
+
+    # add stimulus of 3 X 100 Hz tones lasting for 100 ms with 200 ms between them
+    stimulus = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
+    now = core.getTime()
+    stimulus.play(when=now)
+
+    stimulus = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
+    snow = core.getTime()
+    stimulus.play(when=now+200e-3)
+
+    stimulus = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
+    now = core.getTime()
+    stimulus.play(when=now+200e-3)
 
     # Set sound
     sounds = np.tile(np.arange(NUM_SOUNDS), int(NUM_TRIALS/NUM_SOUNDS))
@@ -151,6 +166,7 @@ for block in range(NUM_BLOCKS):
         win.flip()
         core.wait(STIMULUS_DURATION) # Wait for 2 ms
 
+        logFile.write("Block %d, Trial %d, Loadness: %d, Pause: %d" %(block+1, trial+1, sound_picker, time_up))
         print("Block %d, Trial %d, Loadness: %d, Pause: %d" %(block+1, trial+1, sound_picker, time_up))
 
 
