@@ -16,6 +16,4 @@ for i, string in enumerate(res):
         if word.isdigit():
             numbers.append(int(word))
 
-thisExp.addData('heart_rate', numbers)
-
 port.close()

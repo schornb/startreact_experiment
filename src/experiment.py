@@ -73,7 +73,7 @@ instruction = visual.TextStim(win,
 # Fixation cross
 fixation = visual.ShapeStim(win, 
     vertices=((0, -0.5), (0, 0.5), (0,0), (-0.5,0), (0.5, 0)),
-    lineWidth=5,f
+    lineWidth=5,
     closeShape=False,
     lineColor="white"
 )
