@@ -52,7 +52,7 @@ dataFile = open(fileName, 'w')
 dataFile.write("ID, Experiment Name, Date, Number of Blocks. Number of Trials \n")
 dataFile.write("%s, %s, %s, %s, %s" %(expInfo['ID'], expName, expInfo['Date'], NUM_BLOCKS, NUM_TRIALS))
  
-logFile = logging.LogFile(fileName+'.log', level=logging.EXP)
+logFile = logging.LogFile(fileName+'.log', level=logging.CRITICAL)
 logging.console.setLevel(logging.WARNING)  
 
 endExpNow = False  # flag for 'escape' or other condition => quit the exp
@@ -142,6 +142,9 @@ for block in range(NUM_BLOCKS):
 
     wait_for_click(win, block_text)
 
+    total_time = 0
+    current_time = core.getTime()
+
     for trial in range(NUM_TRIALS):
 
         
@@ -166,8 +169,11 @@ for block in range(NUM_BLOCKS):
         win.flip()
         core.wait(STIMULUS_DURATION) # Wait for 2 ms
 
-        logFile.write("Block %d, Trial %d, Loadness: %d, Pause: %d" %(block+1, trial+1, sound_picker, time_up))
-        print("Block %d, Trial %d, Loadness: %d, Pause: %d" %(block+1, trial+1, sound_picker, time_up))
+        total_time += (core.getTime() - current_time)
+        current_time = core.getTime()
+
+        logFile.write("Block %d, Trial %d, Loadness: %d, Pause: %d, Stimulus Time: %d \n" %(block+1, trial+1, sound_picker, time_up, total_time))
+        print("Block %d, Trial %d, Loadness: %d, Pause: %d \n" %(block+1, trial+1, sound_picker, time_up))
 
 
 
