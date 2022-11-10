@@ -50,4 +50,4 @@ def get_audio(amp, freq, time):
     :returns: sound object in Psychopy
     """
     
-    return sound.Sound(value=freq, secs=time, volume=convert_db_to_vol(amp))
+    return sound.Sound(value=freq, secs=time, volume=convert_db_to_vol(amp), autoLog=True)

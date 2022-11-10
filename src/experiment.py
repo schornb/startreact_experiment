@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from pickle import TRUE
 from psychopy import locale_setup
 from psychopy import prefs
+
+prefs.hardware['audioLib'] = ['PTB']
 from psychopy import sound, gui, visual, core, data, event, logging, clock, colors, layout
 from psychopy.constants import (NOT_STARTED, STARTED, PLAYING, PAUSED,
                                 STOPPED, FINISHED, PRESSED, RELEASED, FOREVER)
@@ -52,8 +55,8 @@ dataFile = open(fileName, 'w')
 dataFile.write("ID, Experiment Name, Date, Number of Blocks. Number of Trials \n")
 dataFile.write("%s, %s, %s, %s, %s" %(expInfo['ID'], expName, expInfo['Date'], NUM_BLOCKS, NUM_TRIALS))
  
-logFile = logging.LogFile(fileName+'.log', level=logging.CRITICAL)
-logging.console.setLevel(logging.WARNING)  
+logFile = logging.LogFile(fileName+'.log', level=0)
+ 
 
 endExpNow = False  # flag for 'escape' or other condition => quit the exp
 
@@ -75,14 +78,16 @@ fixation = visual.ShapeStim(win,
     vertices=((0, -0.5), (0, 0.5), (0,0), (-0.5,0), (0.5, 0)),
     lineWidth=5,
     closeShape=False,
-    lineColor="white"
+    lineColor="white",
+    autoLog=True
 )
 
 # Stimulus circle
 stimulus = visual.Circle(win, 
         radius=5,
         fillColor = 'red',
-        lineColor = 'red'
+        lineColor = 'red',
+        autoLog=True
     )
 
 ####
@@ -120,16 +125,19 @@ for block in range(NUM_BLOCKS):
 
     # add stimulus of 3 X 100 Hz tones lasting for 100 ms with 200 ms between them
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
+    sync.autoLog = True;
     now = core.getTime()
-    sync.play(when=now)
-
+    sync.play(when=now, log=True)
+    
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
+    sync.autoLog = TRUE;
     snow = core.getTime()
-    sync.play(when=now+200e-3)
+    sync.play(when=now+200e-3, log=True)
 
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
+    sync.autoLog = TRUE;
     now = core.getTime()
-    sync.play(when=now+200e-3)
+    sync.play(when=now+200e-3, log=True)
 
     # Set sound
     sounds = np.tile(np.arange(NUM_SOUNDS), int(NUM_TRIALS/NUM_SOUNDS))
@@ -164,8 +172,9 @@ for block in range(NUM_BLOCKS):
 
         if sound_used != None:
             nextFlip = win.getFutureFlipTime(clock='ptb')
-            sound_used.play(when=nextFlip)
+            sound_used.play(when=nextFlip, log=True)
 
+        win.logOnFlip("stimPresented",10)
         win.flip()
         core.wait(STIMULUS_DURATION) # Wait for 2 ms
 
@@ -174,11 +183,11 @@ for block in range(NUM_BLOCKS):
 
         logFile.write("Block %d, Trial %d, Loadness: %d, Pause: %d, Stimulus Time: %d \n" %(block+1, trial+1, sound_picker, time_up, total_time))
         print("Block %d, Trial %d, Loadness: %d, Pause: %d \n" %(block+1, trial+1, sound_picker, time_up))
+        logging.flush()
 
 
 
 
-logging.flush()
 
 # make sure everything is closed down
 win.close()
