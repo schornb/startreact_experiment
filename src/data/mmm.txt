@@ -1,2 +1,0 @@
-ID, Experiment Name, Date, Number of Blocks. Number of Trials 
-mmm, StartReact Experiment, 2022-11-10_15h35.26.024, 5, 15
