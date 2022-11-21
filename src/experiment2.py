@@ -137,15 +137,13 @@ for block in range(NUM_BLOCKS):
     now = core.getTime()
     sync.play(when=now, log=True)
     
-    cbpy.set_comment("Block" + str(block) + ": sound1")
+    cbpy.set_comment("B" + str(block) + ": sound1")
 
 
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
     sync.autoLog = TRUE;
     snow = core.getTime()
     sync.play(when=now+200e-3, log=True)
-
-    cbpy.set_comment("Block" + str(block) + ": sound1")
 
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
     sync.autoLog = TRUE;
@@ -162,7 +160,7 @@ for block in range(NUM_BLOCKS):
     )
 
     wait_for_click(win, block_text)
-    cbpy.set_comment("Block" + str(block) + ": start")
+    cbpy.set_comment("B" + str(block) + ": start")
     res, ts = cbpy.time()
     print(int(ts))
 
@@ -171,7 +169,7 @@ for block in range(NUM_BLOCKS):
 
     for trial in range(NUM_TRIALS):
 
-        cbpy.set_comment("Block" + str(block) + ": Trial: " + str(trial))
+        cbpy.set_comment("B" + str(block) + ": T " + str(trial))
         res, ts = cbpy.time()
         print(int(ts))
     
@@ -195,7 +193,7 @@ for block in range(NUM_BLOCKS):
 
         win.logOnFlip("stimPresented",10)
         win.flip()
-        cbpy.set_comment("Block" + str(block) + ": Trial: " + str(trial) + " Presented")
+        cbpy.set_comment("B" + str(block) + " T " + str(trial) + " P")
         res, ts = cbpy.time()
         print(int(ts))
     
