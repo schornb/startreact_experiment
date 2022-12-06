@@ -10,7 +10,7 @@ conn_params['client-addr']='192.168.137.3'
 
 cbpy.open(parameter=conn_params)
 
-print("Sending timestamps...")
+print("Sending timestamps.....")
 
 prefs.hardware['audioLib'] = ['PTB']
 from psychopy import gui, visual, core, data, logging
