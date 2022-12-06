@@ -75,7 +75,7 @@ win = win = visual.Window([800,600], fullscr=False, monitor="testMonitor", units
 
 # Instruction
 
-INSTRUCTION_TEXT = "To add instruction later!"
+INSTRUCTION_TEXT = "Press any button to start the trial. Prepare your arm to flex and wait for the circle to appear to move"
 
 instruction = visual.TextStim(win, 
         text=INSTRUCTION_TEXT
