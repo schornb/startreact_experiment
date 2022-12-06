@@ -71,7 +71,7 @@ endExpNow = False  # flag for 'escape' or other condition => quit the exp
 #### Setup ####
 
 # Window
-win = win = visual.Window([800,600], fullscr=False, monitor="testMonitor", units="cm")
+win = win = visual.Window([1920,1080], fullscr=False, monitor="testMonitor", units="cm")
 
 # Instruction
 

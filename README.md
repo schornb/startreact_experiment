@@ -2,8 +2,19 @@
 
 # Install
 
-Make sure Python3.9 is installed on your computer. Then, run the following:
-```
+Make sure latest version of anaconda is installed on your computer (have been unable to get cerebus library reliably installed without it)
+``
+
+conda create -n startreact python=3.8
+conda activate startreact
+conda install cython pyqt
+conda numpy scipy matplotlib
+conda install numpy scipy matplotlib
+pip install https://github.com/CerebusOSS/CereLink/releases/download/v7.0.5/cerebus-0.0.4-cp38-cp38-win_amd64.whl
+pip install psychopy
+
+Run from visual studio code using startreact environment
+
 
   # setup virtual environment
   python3.9 -m venv ~/envs/psychopy
