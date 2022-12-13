@@ -130,6 +130,10 @@ print("Starting experiment...")
 assert NUM_TRIALS % NUM_SOUNDS == 0, "Number of blocks must be a multiple of number of sounds"
 
 for block in range(NUM_BLOCKS):
+
+    # image = visual.ImageStim(win, image='images/blank.png')
+
+    # draw_visual(win, image, STIMULUS_DURATION)
     
     # add stimulus of 3 X 100 Hz tones lasting for 100 ms with 200 ms between them
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)

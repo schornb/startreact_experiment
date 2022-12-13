@@ -35,16 +35,16 @@ expInfo = {
     'Other Notes': ''
 }
 
+dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expName)
+if dlg.OK == False:
+    core.quit()  # user pressed cancel
+
 ####
 # Experiment parameters
 ID = expInfo['ID']
 NUM_BLOCKS = expInfo['Blocks']
 NUM_TRIALS = expInfo['Trials per Block']
 ####
-
-dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expName)
-if dlg.OK == False:
-    core.quit()  # user pressed cancel
 expInfo['Date'] = data.getDateStr()  # add a simple timestamp
 expInfo['expName'] = expName
 expInfo['psychopyVersion'] = psychopyVersion
@@ -122,6 +122,12 @@ print("Starting experiment...")
 assert NUM_TRIALS % NUM_SOUNDS == 0, "Number of blocks must be a multiple of number of sounds"
 
 for block in range(NUM_BLOCKS):
+
+    # image = visual.ImageStim(win, image='images/blank.png')
+
+    # draw_visual(win, image, STIMULUS_DURATION)
+
+
 
     # add stimulus of 3 X 100 Hz tones lasting for 100 ms with 200 ms between them
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
