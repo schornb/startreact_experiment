@@ -155,7 +155,9 @@ for block in range(NUM_BLOCKS):
     # Set sound
 
     # First trial is practice, so order is set
-    if block == 0:
+
+    PRACTICE = (block == 0)
+    if PRACTICE:
         sounds = np.arange(NUM_SOUNDS)
     else:
         sounds = np.tile(np.arange(NUM_SOUNDS), int(NUM_TRIALS/NUM_SOUNDS))
@@ -204,7 +206,8 @@ for block in range(NUM_BLOCKS):
         print("Block %d, Trial %d, Loadness: %d, Pause: %d \n" %(block+1, trial+1, sound_picker, time_up))
         logging.flush()
 
-
+        if PRACTICE and trial == 2:
+            break
 
 
 
