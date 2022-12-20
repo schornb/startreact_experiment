@@ -49,6 +49,7 @@ NUM_BLOCKS = expInfo['Blocks']
 NUM_TRIALS = expInfo['Trials per Block']
 DELAY_MIN = 7 # seconds
 DELAY_MAX = 12 # seconds
+TRIAL_START = expInfo['Trial Start']
 ####
 expInfo['Date'] = data.getDateStr()  # add a simple timestamp
 expInfo['expName'] = expName
@@ -73,11 +74,18 @@ win = win = visual.Window([800,600], fullscr=False, monitor="testMonitor", units
 # Instruction
 
 INSTRUCTION_TEXT = "Press any button to start the trial. Prepare to raise your arm to the side as fast as you can"
+
+TEST_RUN_INSTRUCTION_TEXT = "TEST RUN \n 1. Raise your elbow \n 2. Bend your elbow \n 3. Extend your elbow \n 4. Lift your wrist \n 5. Move your index finger towards your thumb"
+
 # Have different instructions per block
 # Prepare to raise your arm to the side as fast as you can
 
 instruction = visual.TextStim(win, 
         text=INSTRUCTION_TEXT
+    )
+
+test_run_instruction = visual.TextStim(win,
+        text=TEST_RUN_INSTRUCTION_TEXT
     )
 
 # Fixation cross
@@ -128,7 +136,7 @@ print("Starting experiment...")
 
 assert NUM_TRIALS % NUM_SOUNDS == 0, "Number of blocks must be a multiple of number of sounds"
 
-for block in range(NUM_BLOCKS):
+for block in range(TRIAL_START, NUM_BLOCKS):
 
     # image = visual.ImageStim(win, image='images/blank.png')
 
@@ -159,6 +167,7 @@ for block in range(NUM_BLOCKS):
     PRACTICE = (block == 0)
     if PRACTICE:
         sounds = np.arange(NUM_SOUNDS)
+        wait_for_click(win, test_run_instruction)
     else:
         sounds = np.tile(np.arange(NUM_SOUNDS), int(NUM_TRIALS/NUM_SOUNDS))
         np.random.shuffle(sounds)
