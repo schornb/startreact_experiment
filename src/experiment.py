@@ -30,14 +30,15 @@ psychopyVersion = '2022.1.4'
 expName = 'StartReact Experiment' 
 expInfo = {
     'ID': '',
-    'Blocks': 5, 
+    'Blocks': 5, # 5 plus practice 
     'Trials per Block': 30,
-    'Trial Start': 0,
+    'Block Start': 0, #0-4
     # ^ pick what trial you want to start at if you need to restart the experiment
     # check 
     'Other Notes': '',
 }
 
+# https://psychopy.org/api/gui.html
 dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expName)
 if dlg.OK == False:
     core.quit()  # user pressed cancel
@@ -47,9 +48,11 @@ if dlg.OK == False:
 ID = expInfo['ID']
 NUM_BLOCKS = expInfo['Blocks']
 NUM_TRIALS = expInfo['Trials per Block']
+PRACTICE_TRIALS = 3
+TOTAL_TRIALS = NUM_TRIALS + PRACTICE_TRIALS
 DELAY_MIN = 7 # seconds
 DELAY_MAX = 12 # seconds
-TRIAL_START = expInfo['Trial Start']
+BLOCK_START = expInfo['Block Start']
 ####
 expInfo['Date'] = data.getDateStr()  # add a simple timestamp
 expInfo['expName'] = expName
@@ -69,24 +72,16 @@ endExpNow = False  # flag for 'escape' or other condition => quit the exp
 #### Setup ####
 
 # Window
-win = win = visual.Window([800,600], fullscr=False, monitor="testMonitor", units="cm")
+win = visual.Window([800,600], fullscr=False, monitor="testMonitor", units="cm") # Check for escape with full screen
 
 # Instruction
 
-INSTRUCTION_TEXT = "Press any button to start the trial. Prepare to raise your arm to the side as fast as you can"
+TEST_RUN_TEXT = "TEST RUN"
 
-TEST_RUN_INSTRUCTION_TEXT = "TEST RUN \n 1. Raise your elbow \n 2. Bend your elbow \n 3. Extend your elbow \n 4. Lift your wrist \n 5. Move your index finger towards your thumb"
+BLOCK_TEXTS = np.array(["Raise your arm to the side", "Bend your elbow", "Extend your elbow", "Lift your wrist", "Move your index finger towards your thumb"])
 
 # Have different instructions per block
 # Prepare to raise your arm to the side as fast as you can
-
-instruction = visual.TextStim(win, 
-        text=INSTRUCTION_TEXT
-    )
-
-test_run_instruction = visual.TextStim(win,
-        text=TEST_RUN_INSTRUCTION_TEXT
-    )
 
 # Fixation cross
 fixation = visual.ShapeStim(win, 
@@ -126,17 +121,13 @@ SYNC_TIME = 100e-3 # sec
 
 #### Experiment #####
 
-# Instructions 
-
-wait_for_click(win, instruction)
-
 # Start experiment
 
 print("Starting experiment...")
 
 assert NUM_TRIALS % NUM_SOUNDS == 0, "Number of blocks must be a multiple of number of sounds"
 
-for block in range(TRIAL_START, NUM_BLOCKS):
+for block in range(BLOCK_START, NUM_BLOCKS):
 
     # image = visual.ImageStim(win, image='images/blank.png')
 
@@ -145,6 +136,7 @@ for block in range(TRIAL_START, NUM_BLOCKS):
 
 
     # add stimulus of 3 X 100 Hz tones lasting for 100 ms with 200 ms between them
+   
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
     sync.autoLog = True
     now = core.getTime()
@@ -164,27 +156,38 @@ for block in range(TRIAL_START, NUM_BLOCKS):
 
     # First trial is practice, so order is set
 
-    PRACTICE = (block == 0)
-    if PRACTICE:
-        sounds = np.arange(NUM_SOUNDS)
-        wait_for_click(win, test_run_instruction)
-    else:
-        sounds = np.tile(np.arange(NUM_SOUNDS), int(NUM_TRIALS/NUM_SOUNDS))
-        np.random.shuffle(sounds)
-
-    # Click to start block
-    block_text = visual.TextStim(win, 
-        text="Block %d\nClick to Start" %(block+1)
+    test_run_instruction = visual.TextStim(win,
+        text=TEST_RUN_TEXT
     )
 
-    wait_for_click(win, block_text)
+    sounds = np.zeros(NUM_TRIALS+PRACTICE_TRIALS, dtype=int)
+    sounds_random = np.tile(np.arange(NUM_SOUNDS), int(NUM_TRIALS/NUM_SOUNDS))
+    np.random.shuffle(sounds_random)
+    sounds[0:PRACTICE_TRIALS] = [0, 1, 2]
+    sounds[PRACTICE_TRIALS:] = sounds_random
+
+    # Click to start block
+
+    # Add practice trial (one of each sound)
+
+    block_instruction = visual.TextStim(win,
+        text=f"Block {block+1}\n{BLOCK_TEXTS[block]}\nClick to Start"
+    )
+
+    wait_for_click(win, block_instruction)
 
     total_time = 0
     current_time = core.getTime()
 
-    # Add practice trial (one of each sound)
+    for trial in range(TOTAL_TRIALS):
 
-    for trial in range(NUM_TRIALS):
+        PRACTICE = (trial < PRACTICE_TRIALS) # [0, 1, 2]
+        
+        if trial == 0:
+            wait_for_click(win, test_run_instruction)
+        if trial == PRACTICE_TRIALS:
+            wait_for_click(win, block_instruction)
+
 
         # Fixation
         time_up = randint(DELAY_MIN, DELAY_MAX) # Picks pause time between 5 and 10 seconds
@@ -211,12 +214,13 @@ for block in range(TRIAL_START, NUM_BLOCKS):
         total_time += (core.getTime() - current_time)
         current_time = core.getTime()
 
-        logFile.write("Block %d, Trial %d, Loadness: %d, Pause: %d, Trial Time: %d \n" %(block+1, trial+1, sound_picker, time_up, total_time))
-        print("Block %d, Trial %d, Loadness: %d, Pause: %d \n" %(block+1, trial+1, sound_picker, time_up))
+        if PRACTICE:
+            logFile.write("Block %d, Practice Trial %d, Loadness: %d, Pause: %d, Trial Time: %d \n" %(block+1, trial+1, sound_picker, time_up, total_time))
+            print("Block %d, Practice Trial %d, Loadness: %d, Pause: %d \n" %(block+1, trial+1, sound_picker, time_up))
+        else:
+            logFile.write("Block %d, Trial %d, Loadness: %d, Pause: %d, Trial Time: %d \n" %(block+1, trial+1-PRACTICE_TRIALS, sound_picker, time_up, total_time))
+            print("Block %d, Trial %d, Loadness: %d, Pause: %d \n" %(block+1, trial+1-PRACTICE_TRIALS, sound_picker, time_up))
         logging.flush()
-
-        if PRACTICE and trial == 2:
-            break
 
 
 
