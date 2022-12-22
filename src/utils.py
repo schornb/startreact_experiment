@@ -14,6 +14,9 @@ def wait_for_click(win, visual):
         visual.draw()
         win.flip()
         click = event.waitKeys()
+    if click[0] == 'Esc':
+        win.close()
+        core.quit()
     return click
 
 
@@ -51,3 +54,11 @@ def get_audio(amp, freq, time):
     """
     
     return sound.Sound(value=freq, secs=time, volume=convert_db_to_vol(amp), autoLog=True)
+
+def get_keypress(win):
+    keys = event.getKeys()
+    if keys and keys[0] == 'Esc':
+        win.close()
+        core.quit()
+    else: 
+        return False

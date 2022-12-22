@@ -33,22 +33,37 @@ from utils import draw_visual, get_audio, wait_for_click
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 
-# Store info about the experiment session
 psychopyVersion = '2022.1.4'
 expName = 'StartReact Experiment' 
 expInfo = {
     'ID': '',
-    'Blocks': 5, 
-    'Trials per Block': 15,
-    'Other Notes': ''
+    'Blocks': 5, # 5 plus practice 
+    'Trials per Block': 30,
+    'Block Start (Please only input 1, 2, 3, 4, or 5)': 1, #1-5
+    # ^ pick what trial you want to start at if you need to restart the experiment
+    # check 
+    'Other Notes': '',
 }
+
+# https://psychopy.org/api/gui.html
+dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expName)
+if dlg.OK == False:
+    core.quit()  # user pressed cancel
 
 ####
 # Experiment parameters
 ID = expInfo['ID']
 NUM_BLOCKS = expInfo['Blocks']
 NUM_TRIALS = expInfo['Trials per Block']
+PRACTICE_TRIALS = 3
+TOTAL_TRIALS = NUM_TRIALS + PRACTICE_TRIALS
+DELAY_MIN = 7 # seconds
+DELAY_MAX = 12 # seconds
+BLOCK_START = expInfo['Block Start (Please only input 1, 2, 3, 4, or 5)']-1
 ####
+expInfo['Date'] = data.getDateStr()  # add a simple timestamp
+expInfo['expName'] = expName
+expInfo['psychopyVersion'] = psychopyVersion
 
 dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expName)
 if dlg.OK == False:
@@ -137,7 +152,7 @@ for block in range(NUM_BLOCKS):
     
     # add stimulus of 3 X 100 Hz tones lasting for 100 ms with 200 ms between them
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
-    sync.autoLog = True;
+    sync.autoLog = True
     now = core.getTime()
     sync.play(when=now, log=True)
     
@@ -145,12 +160,12 @@ for block in range(NUM_BLOCKS):
 
 
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
-    sync.autoLog = TRUE;
+    sync.autoLog = True
     snow = core.getTime()
     sync.play(when=now+200e-3, log=True)
 
     sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
-    sync.autoLog = TRUE;
+    sync.autoLog = True
     now = core.getTime()
     sync.play(when=now+200e-3, log=True)
 
@@ -172,6 +187,8 @@ for block in range(NUM_BLOCKS):
     current_time = core.getTime()
 
     for trial in range(NUM_TRIALS):
+
+        PRACTICE = (trial < PRACTICE_TRIALS)
 
         cbpy.set_comment("B" + str(block) + ": T " + str(trial))
         res, ts = cbpy.time()
@@ -206,8 +223,12 @@ for block in range(NUM_BLOCKS):
         total_time += (core.getTime() - current_time)
         current_time = core.getTime()
 
-        logFile.write("Block %d, Trial %d, Loadness: %d, Pause: %d, Stimulus Time: %d \n" %(block+1, trial+1, sound_picker, time_up, total_time))
-        print("Block %d, Trial %d, Loadness: %d, Pause: %d \n" %(block+1, trial+1, sound_picker, time_up))
+         if PRACTICE:
+            logFile.write("Block %d, Practice Trial %d, Loadness: %d, Pause: %d, Trial Time: %d \n" %(block+1, trial+1, sound_picker, time_up, total_time))
+            print("Block %d, Practice Trial %d, Loadness: %d, Pause: %d \n" %(block+1, trial+1, sound_picker, time_up))
+        else:
+            logFile.write("Block %d, Trial %d, Loadness: %d, Pause: %d, Trial Time: %d \n" %(block+1, trial+1-PRACTICE_TRIALS, sound_picker, time_up, total_time))
+            print("Block %d, Trial %d, Loadness: %d, Pause: %d \n" %(block+1, trial+1-PRACTICE_TRIALS, sound_picker, time_up))
         logging.flush()
 
 

@@ -4,6 +4,13 @@
 from pickle import TRUE
 from psychopy import locale_setup
 from psychopy import prefs
+from cerebus import cbpy
+conn_params = cbpy.defaultConParams()
+conn_params['client-addr']='192.168.137.3'
+
+cbpy.open(parameter=conn_params)
+
+print("Sending timestamps.....")
 
 prefs.hardware['audioLib'] = ['PTB']
 from psychopy import sound, gui, visual, core, data, event, logging, clock, colors, layout
@@ -137,6 +144,25 @@ for block in range(BLOCK_START, NUM_BLOCKS):
 
     # add stimulus of 3 X 100 Hz tones lasting for 100 ms with 200 ms between them
 
+    # add stimulus of 3 X 100 Hz tones lasting for 100 ms with 200 ms between them
+    sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
+    sync.autoLog = True
+    now = core.getTime()
+    sync.play(when=now, log=True)
+    
+    cbpy.set_comment("B" + str(block) + ": sound1")
+
+
+    sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
+    sync.autoLog = True
+    snow = core.getTime()
+    sync.play(when=now+200e-3, log=True)
+
+    sync = get_audio(SYNC_DB, SYNC_HZ, SYNC_TIME)
+    sync.autoLog = True
+    now = core.getTime()
+    sync.play(when=now+200e-3, log=True)
+
     # Set sound
 
     # First trial is practice, so order is set
@@ -163,6 +189,10 @@ for block in range(BLOCK_START, NUM_BLOCKS):
         )
 
         wait_for_click(win, block_instruction)
+
+        cbpy.set_comment("B" + str(block) + ": start")
+        res, ts = cbpy.time()
+        print(int(ts))
 
         total_time = 0
         current_time = core.getTime()
@@ -201,6 +231,9 @@ for block in range(BLOCK_START, NUM_BLOCKS):
 
             win.logOnFlip("stimPresented",10)
             win.flip()
+            cbpy.set_comment("B" + str(block) + " T " + str(trial) + " P")
+            res, ts = cbpy.time()
+            print(int(ts))
             core.wait(STIMULUS_DURATION) # Wait for 2 ms
 
             escape = get_keypress(win)
@@ -221,5 +254,6 @@ for block in range(BLOCK_START, NUM_BLOCKS):
 
 
     # make sure everything is closed down
+    cbpy.close()
     win.close()
     core.quit()
