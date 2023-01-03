@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pickle import TRUE
+##from pickle import TRUE
 from psychopy import locale_setup
 from psychopy import prefs
 from cerebus import cbpy
@@ -188,8 +188,6 @@ for block in range(NUM_BLOCKS):
 
     for trial in range(NUM_TRIALS):
 
-        PRACTICE = (trial < PRACTICE_TRIALS)
-
         cbpy.set_comment("B" + str(block) + ": T " + str(trial))
         res, ts = cbpy.time()
         print(int(ts))
@@ -223,12 +221,8 @@ for block in range(NUM_BLOCKS):
         total_time += (core.getTime() - current_time)
         current_time = core.getTime()
 
-         if PRACTICE:
-            logFile.write("Block %d, Practice Trial %d, Loadness: %d, Pause: %d, Trial Time: %d \n" %(block+1, trial+1, sound_picker, time_up, total_time))
-            print("Block %d, Practice Trial %d, Loadness: %d, Pause: %d \n" %(block+1, trial+1, sound_picker, time_up))
-        else:
-            logFile.write("Block %d, Trial %d, Loadness: %d, Pause: %d, Trial Time: %d \n" %(block+1, trial+1-PRACTICE_TRIALS, sound_picker, time_up, total_time))
-            print("Block %d, Trial %d, Loadness: %d, Pause: %d \n" %(block+1, trial+1-PRACTICE_TRIALS, sound_picker, time_up))
+        logFile.write("Block %d, Practice Trial %d, Loadness: %d, Pause: %d, Trial Time: %d \n" %(block+1, trial+1, sound_picker, time_up, total_time))
+        print("Block %d, Practice Trial %d, Loadness: %d, Pause: %d \n" %(block+1, trial+1, sound_picker, time_up))
         logging.flush()
 
 

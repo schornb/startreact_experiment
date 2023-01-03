@@ -13,7 +13,7 @@ cbpy.open(parameter=conn_params)
 print("Sending timestamps.....")
 
 prefs.hardware['audioLib'] = ['PTB']
-from psychopy import sound, gui, visual, core, data, event, logging, clock, colors, layout
+from psychopy import sound, gui, visual, core, data, event, logging, clock, colors
 from psychopy.constants import (NOT_STARTED, STARTED, PLAYING, PAUSED,
                                 STOPPED, FINISHED, PRESSED, RELEASED, FOREVER)
 
@@ -33,7 +33,7 @@ _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 
 # Store info about the experiment session
-psychopyVersion = '2022.1.4'
+psychopyVersion = '2021.2.3'
 expName = 'StartReact Experiment' 
 expInfo = {
     'ID': '',
@@ -79,7 +79,7 @@ endExpNow = False  # flag for 'escape' or other condition => quit the exp
 #### Setup ####
 
 # Window
-win = visual.Window([800,600], fullscr=False, monitor="testMonitor", units="cm") # Check for escape with full screen
+win = visual.Window([800,600], fullscr=True, monitor="testMonitor", units="cm") # Check for escape with full screen
 
 # Instruction
 
