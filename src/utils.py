@@ -1,5 +1,13 @@
 
-from psychopy import visual, core, sound, event
+from psychopy import prefs
+prefs.hardware['audioLib'] = ['PTB']
+prefs.hardware['audioLatencyMode'] = 3
+
+from psychopy import visual, core, sound, event, logging
+
+
+import numpy as np
+from cerebus import cbpy
 
 def wait_for_click(win, visual):
     """
@@ -18,7 +26,6 @@ def wait_for_click(win, visual):
         win.close()
         core.quit()
     return click
-
 
 def draw_visual(window, visual, time):
     """
@@ -52,8 +59,7 @@ def get_audio(amp, freq, time):
     :param time: Time value (in s)
     :returns: sound object in Psychopy
     """
-    
-    return sound.Sound(value=freq, secs=time, volume=convert_db_to_vol(amp), autoLog=True)
+    return sound.Sound(value=freq, secs=time, hamming=False, volume=convert_db_to_vol(amp), preBuffer=-1, syncToWin=True, autoLog=True)
 
 def get_keypress(win):
     keys = event.getKeys()
@@ -62,3 +68,49 @@ def get_keypress(win):
         core.quit()
     else: 
         return False
+
+def presentBlock(win, blockText, blockLog):
+    escape = get_keypress(win)
+    if not escape:
+
+        block_instruction = visual.TextStim(win,blockText)
+
+        #text=f"Block {block+1}\n{expInfo['BLOCK_TEXTS'][block]}\nPress any key to Start"
+        
+        wait_for_click(win, block_instruction)
+
+        cbpy.set_comment(blockLog + ": start")
+
+
+def presentTrials(win, expInfo, stimParams, blockText, logFile, numTrials, soundStrengths, fixation, stimulus):
+
+        total_time = 0
+        current_time = core.getTime()
+        for trial in range(numTrials):
+            # Fixation
+            time_up = np.random.uniform(expInfo['DELAY_MIN'], expInfo['DELAY_MAX'] ) # Picks pause time between delay_min and delay_max seconds
+            draw_visual(win, fixation, time_up)
+ 
+            # Stimulus
+            sound_picker = soundStrengths[trial]            
+            sound_used = stimParams['sound_used'][sound_picker]              
+            if sound_used != None:
+                nextFlip = win.getFutureFlipTime(clock='now')
+                print(str(nextFlip))
+                sound_used.play(when=0, log=True)
+
+            stimulus.draw()
+            
+           
+
+            win.logOnFlip("stimPresented",10)
+            win.flip()
+            
+            cbpy.set_comment(blockText + " T " + str(trial) + " P" + str(soundStrengths[trial]))
+            core.wait(stimParams['STIMULUS_DURATION'])
+
+            logFile.write(blockText + " Trial %d, Loudness: %d, Pause: %.3f, Trial Time: %.3f \n" %(trial+1, sound_picker, time_up, core.getTime()))
+            print(blockText +         " Trial %d, Loudness: %d, Pause: %.3f, Trial Time: %.3f \n" %(trial+1, sound_picker, time_up, core.getTime()))
+            
+            logging.flush()
+
