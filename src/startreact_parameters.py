@@ -1,6 +1,8 @@
 from psychopy import prefs
 prefs.hardware['audioLib'] = ['PTB']
-prefs.hardware['audioLatencyMode'] = 3
+prefs.hardware['audioLatencyMode'] = 4
+prefs.hardware['audioDriver'] = 'Primary Sound'
+
 from psychopy import locale_setup, sound, gui, visual, core, data, event, logging, clock, colors
 import os
 import numpy as np
@@ -33,14 +35,14 @@ def get_startreact_parameters(win):
     expInfo['Block Start']      = expInfo['Block Start (Please only input 1, 2, 3, 4, or 5)'] - 1
     #expInfo['Practice Trials']  = 3
     #expInfo['TOTAL_TRIALS']     = NUM_TRIALS + PRACTICE_TRIALS
-    expInfo['DELAY_MIN']        = 1 # seconds
-    expInfo['DELAY_MAX']        = 2 # seconds
+    expInfo['DELAY_MIN']        = 5 # seconds
+    expInfo['DELAY_MAX']        = 7 # seconds
     expInfo['BLOCK_TEXTS']      = np.array(["Raise your arm to the side", 
                                             "Bend your elbow", 
                                             "Extend your elbow", 
                                             "Lift your wrist", 
                                             "Move your index finger towards your thumb"])
-    expInfo['TEST_RUN_TEXT']    = "TEST RUN"
+    expInfo['TEST_RUN_TEXT']    = "Practice Trials. Press any key to start"
 
     ####
     

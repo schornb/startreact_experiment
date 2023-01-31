@@ -12,9 +12,8 @@ import utils
 
 from psychopy import prefs
 prefs.hardware['audioLib'] = ['PTB']
-prefs.hardware['audioLatencyMode'] = 3
-
-#prefs.hardware['audioDriver'] = 'portaudio'
+prefs.hardware['audioLatencyMode'] = 4
+prefs.hardware['audioDriver'] = 'Primary Sound'
 
 
 from psychopy import locale_setup, sound, gui, visual, core, data, event, logging, clock, colors
@@ -52,7 +51,7 @@ for block in range(expInfo['Block Start'],  expInfo['Blocks']):
         test_run_instruction = visual.TextStim(win,
             text=expInfo['TEST_RUN_TEXT']
         )
-
+ 
         sounds_practice = np.zeros(expInfo['Practice Trials'], dtype=int)
         for i in range (expInfo['Practice Trials']):
             sounds_practice[i] = i % stimParams['NUM_SOUNDS']

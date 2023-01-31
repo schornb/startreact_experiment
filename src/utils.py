@@ -1,7 +1,9 @@
 
 from psychopy import prefs
 prefs.hardware['audioLib'] = ['PTB']
-prefs.hardware['audioLatencyMode'] = 3
+prefs.hardware['audioLatencyMode'] = 4
+prefs.hardware['audioDriver'] = 'Primary Sound'
+
 
 from psychopy import visual, core, sound, event, logging
 
@@ -89,16 +91,17 @@ def presentTrials(win, expInfo, stimParams, blockText, logFile, numTrials, sound
         for trial in range(numTrials):
             # Fixation
             time_up = np.random.uniform(expInfo['DELAY_MIN'], expInfo['DELAY_MAX'] ) # Picks pause time between delay_min and delay_max seconds
-            draw_visual(win, fixation, time_up)
- 
             # Stimulus
             sound_picker = soundStrengths[trial]            
             sound_used = stimParams['sound_used'][sound_picker]              
-            if sound_used != None:
-                nextFlip = win.getFutureFlipTime(clock='now')
-                print(str(nextFlip))
-                sound_used.play(when=0, log=True)
 
+            draw_visual(win, fixation, time_up-0.085)
+            if sound_used != None:
+                #nextFlip = win.getFutureFlipTime(clock='now')
+                #print(str(nextFlip))
+                sound_used.play(when=0, log=True) 
+
+            core.wait(0.085);
             stimulus.draw()
             
            
