@@ -76,8 +76,8 @@ def defStimulus(win):
     # Stimulus circle
     stimulus = visual.Circle(win, 
         radius=7,
-        fillColor = 'white',
-        lineColor = 'white',
+        fillColor = 'red',
+        lineColor = 'red',
         autoLog=True
     )
     return stimulus
@@ -85,16 +85,16 @@ def defStimulus(win):
 def stimParameters():
 # Stimulus Parameters
     stimParams = {}
-    stimParams['STIMULUS_DURATION'] = 1/20 # seconds
+    stimParams['STIMULUS_DURATION'] = 0.02 # 20 ms
 
 # Sound Parameters 
     stimParams['NUM_SOUNDS']    = 3
     stimParams['QUIET_DB']      = 80 # db
     stimParams['QUIET_HZ']      = 500 # Hz
-    stimParams['QUIET_TIME']    = 1/20 # sec
+    stimParams['QUIET_TIME']    = 1/20 # 50 ms
     stimParams['LOUD_DB']       = 120 # db
     stimParams['LOUD_HZ']       = 500 # Hz
-    stimParams['LOUD_TIME']     = 1/20 # sec
+    stimParams['LOUD_TIME']     = 1/20 # 50 ms
     stimParams['SYNC_DB']       = 80 # db
     stimParams['SYNC_HZ']       = 500 # Hz
     stimParams['SYNC_TIME']     = 100e-3 # sec
